@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2702633C2235A1EC008B5910 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2702633B2235A1EC008B5910 /* main.cpp */; };
+		270263492235A636008B5910 /* TrigGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 270263472235A636008B5910 /* TrigGenerator.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,13 @@
 /* Begin PBXFileReference section */
 		270263382235A1EC008B5910 /* Music */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Music; sourceTree = BUILT_PRODUCTS_DIR; };
 		2702633B2235A1EC008B5910 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		270263432235A22A008B5910 /* libsfml-audio.2.4.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libsfml-audio.2.4.2.dylib"; path = "../../../../usr/local/Cellar/sfml/2.4.2_1/lib/libsfml-audio.2.4.2.dylib"; sourceTree = "<group>"; };
+		270263442235A22A008B5910 /* libsfml-system.2.4.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libsfml-system.2.4.2.dylib"; path = "../../../../usr/local/Cellar/sfml/2.4.2_1/lib/libsfml-system.2.4.2.dylib"; sourceTree = "<group>"; };
+		270263472235A636008B5910 /* TrigGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TrigGenerator.cpp; sourceTree = "<group>"; };
+		270263482235A636008B5910 /* TrigGenerator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TrigGenerator.hpp; sourceTree = "<group>"; };
+		2702634A2235A6A7008B5910 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		278EA591223B2C58002A67FD /* Sheet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sheet.h; sourceTree = "<group>"; };
+		278EA592223B35F2002A67FD /* DancingMad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DancingMad.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +51,7 @@
 			children = (
 				2702633A2235A1EC008B5910 /* Music */,
 				270263392235A1EC008B5910 /* Products */,
+				270263422235A22A008B5910 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +66,23 @@
 		2702633A2235A1EC008B5910 /* Music */ = {
 			isa = PBXGroup;
 			children = (
+				2702634A2235A6A7008B5910 /* config.h */,
 				2702633B2235A1EC008B5910 /* main.cpp */,
+				278EA592223B35F2002A67FD /* DancingMad.h */,
+				278EA591223B2C58002A67FD /* Sheet.h */,
+				270263482235A636008B5910 /* TrigGenerator.hpp */,
+				270263472235A636008B5910 /* TrigGenerator.cpp */,
 			);
 			path = Music;
+			sourceTree = "<group>";
+		};
+		270263422235A22A008B5910 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				270263432235A22A008B5910 /* libsfml-audio.2.4.2.dylib */,
+				270263442235A22A008B5910 /* libsfml-system.2.4.2.dylib */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,6 +142,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2702633C2235A1EC008B5910 /* main.cpp in Sources */,
+				270263492235A636008B5910 /* TrigGenerator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,18 +263,34 @@
 		270263402235A1EC008B5910 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = M8MME6Q9DA;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/sfml/2.4.2_1/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYSTEM_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
 		};
 		270263412235A1EC008B5910 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = M8MME6Q9DA;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/sfml/2.4.2_1/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYSTEM_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
 		};
