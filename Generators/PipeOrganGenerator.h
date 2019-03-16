@@ -9,7 +9,8 @@
 #ifndef PipeOrganGenerator_h
 #define PipeOrganGenerator_h
 
-#include<array>
+#include <array>
+#include <memory>
 
 #include "SoundGenerator.h"
 #include "SineWaveGenerator.h"
@@ -22,9 +23,13 @@ protected:
 		0.5, 1.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0
 	};
 	std::array<SineWaveGenerator, N_DRAWBARS> _drawbars {{}};
+	std::array<std::shared_ptr<VibratoFilter>, N_DRAWBARS> _drawbarVibratos {};
 public:
 	PipeOrganGenerator(std::array<double, N_DRAWBARS> const& dbs) {
 		for(size_t i = 0; i < N_DRAWBARS; ++i) {
+			_drawbarVibratos[i] = std::make_shared<VibratoFilter>();
+			_drawbarVibratos[i]->intensity = 5.0;
+			_drawbars[i].filters.push_back(_drawbarVibratos[i]);
 			_drawbars[i].volume(clamp(dbs[i], 0.0, 8.0) / 8.0);
 		}
 	}
@@ -35,6 +40,7 @@ public:
 		
 		for(size_t i = 0; i < N_DRAWBARS; ++i) {
 			_drawbars[i].frequency(f_fund * _drawbarHarmonics[i]);
+			_drawbarVibratos[i]->rate = f_fund * _drawbarHarmonics[i] / 50.0;
 			_drawbars[i].activate(this->isActive());
 			sum_a += _drawbars[i].next();
 		}
