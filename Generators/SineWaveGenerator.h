@@ -26,7 +26,6 @@ private:
 	bool _persistSignalUntilZero {false};
 	
 	double _θ {0.0}; // signal phase represented as angle (radians)
-	double _targetVolume {1.0}; // the volume level requested by the user.
 	
 	double _calculatePhaseDelta(timecode_t const Δ_sample, frequency_t const f) {
 		double const τ = 2.0 * M_PI;
@@ -39,11 +38,8 @@ private:
 		double const Δ_θ = τ * f * static_cast<double>(Δ_sample) / f_sample;
 		return Δ_θ;
 	}
-public:
-	double volume() { return this->_targetVolume; }
-	void volume(double v) { this->_targetVolume = v; }
 	
-	amplitude_t next() {
+	amplitude_t _nextWithoutFilters() {
 		// calculate the next position of θ
 		double const τ = M_PI * 2.0;
 		timecode_t const Δ_sample = 1U; // assume next sample

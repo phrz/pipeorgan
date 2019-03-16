@@ -19,7 +19,6 @@
 #include "config.h"
 #include "TrigGenerator.hpp"
 #include "DancingMad.h"
-
 #include "SineWaveGenerator.h"
 
 using namespace std;
@@ -42,7 +41,7 @@ sample_t set_volume(sample_t s, double volume) {
 	return s - (0.5 * volume * volume * (SAMPLE_T_MAX - SAMPLE_T_ZERO_POINT));
 }
 
-sample_t amplitude_to_sample(amplitude_t a) {
+sample_t amplitudeToSample(amplitude_t a) {
 //	sample_t s2 = SAMPLE_T_MAX / 2;
 //	return a * s2 + s2;
 	return a * SAMPLE_T_MAX;
@@ -108,7 +107,7 @@ int main() {
 				amplitude_t a = voices[n].next();
 				sum_a += a;
 			}
-			sample_t s = amplitude_to_sample(sum_a);
+			sample_t s = amplitudeToSample(sum_a);
 			printSample(s);
 		}
 	}
