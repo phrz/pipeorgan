@@ -32,6 +32,7 @@
 		270263482235A636008B5910 /* TrigGenerator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TrigGenerator.hpp; sourceTree = "<group>"; };
 		2702634A2235A6A7008B5910 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		2737383E223C0500007C2F72 /* SoundGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoundGenerator.h; sourceTree = "<group>"; };
+		27373840223C7A9A007C2F72 /* SineWaveGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SineWaveGenerator.h; sourceTree = "<group>"; };
 		278EA591223B2C58002A67FD /* Sheet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sheet.h; sourceTree = "<group>"; };
 		278EA592223B35F2002A67FD /* DancingMad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DancingMad.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -91,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				2737383E223C0500007C2F72 /* SoundGenerator.h */,
+				27373840223C7A9A007C2F72 /* SineWaveGenerator.h */,
 			);
 			path = Generators;
 			sourceTree = "<group>";

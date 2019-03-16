@@ -20,7 +20,7 @@
 #include "TrigGenerator.hpp"
 #include "DancingMad.h"
 
-#include "SoundGenerator.h"
+#include "SineWaveGenerator.h"
 
 using namespace std;
 
