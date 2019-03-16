@@ -11,14 +11,14 @@
 
 #include <cstdint>
 
-using sample_t = uint16_t;
+using sample_t = int16_t;
 using midi_t = int16_t;
 
 #define N_DRAWBARS 9
 
 #define SAMPLE_T_BYTES 2
 #define SAMPLE_T_ZERO_POINT 0x0000
-#define SAMPLE_T_MAX 0xFFFF
+#define SAMPLE_T_MAX 0x7FFF
 
 // amplitude at which we allow a voice to "die" (drop to zero)
 // to avoid pops due to infinite-velocity amplitude delta between samples.

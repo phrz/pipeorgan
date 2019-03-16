@@ -20,6 +20,8 @@
 #include "TrigGenerator.hpp"
 #include "DancingMad.h"
 
+#include "SoundGenerator.h"
+
 using namespace std;
 
 // [CITE] http://subsynth.sourceforge.net/midinote2freq.html
@@ -28,8 +30,6 @@ frequency_t midiNumberToFrequency(midi_t midiNumber) {
 }
 
 void printSample(sample_t t) {
-//	putchar(t & 0xFF);
-//	putchar(t >> 8);
 	for(size_t i = 0; i < SAMPLE_T_BYTES; ++i) {
 		putchar((t >> 8*i) & 0xFF);
 	}
@@ -42,8 +42,10 @@ sample_t set_volume(sample_t s, double volume) {
 	return s - (0.5 * volume * volume * (SAMPLE_T_MAX - SAMPLE_T_ZERO_POINT));
 }
 
-sample_t normalize(amplitude_t a) {
-	return (a + 1.0) * (SAMPLE_T_MAX >> 1);
+sample_t amplitude_to_sample(amplitude_t a) {
+//	sample_t s2 = SAMPLE_T_MAX / 2;
+//	return a * s2 + s2;
+	return a * SAMPLE_T_MAX;
 }
 
 int main() {
@@ -53,14 +55,13 @@ int main() {
 	vector<frequency_t> currentFrequencies {};
 	
 	vector<midi_t> commands {};
-	timecode_t sample_i {0U};
-	vector<TrigGenerator> voices {};
-	array<frequency_t, N_VOICES> voicesLastFrequencies {-1.0}; // -1 == off
-	array<bool, N_VOICES> voicePlayedLastSample {false};
-	array<bool, N_VOICES> persistVoiceUntilZero {false};
+	vector<SineWaveGenerator> voices {};
+	
+	double const baselineVolume = 0.25; // arbitrary, avoids overflow
 	
 	for(size_t i = 0; i < N_VOICES; ++i) {
-		voices.emplace_back(SAMPLE_RATE);
+		voices.emplace_back();
+		voices[i].volume(baselineVolume);
 	}
 	
 	for(timecode_t tick = 0; tick < MAX_TICK; tick++) {
@@ -84,8 +85,6 @@ int main() {
 		// now that currentNotes reflects the notes being played
 		// this tick, calculate `s`, the integer representing the sample value
 		// at this second.
-		double const desired_note_volume = 0.25; // arbitrary, avoids overflow
-		
 		currentFrequencies.clear();
 		for(midi_t midiNote : currentNotes) {
 			frequency_t fundamental = midiNumberToFrequency(midiNote);
@@ -93,39 +92,24 @@ int main() {
 		}
 		
 		for(timecode_t i = 0; i < SAMPLES_PER_TICK; ++i) {
-			sample_t s {0U};
+			amplitude_t sum_a {0.0};
 			size_t note_i {0U};
 			// deal with active voices (corresponding to active notes)
 			for(frequency_t hz : currentFrequencies) {
-				voicesLastFrequencies[note_i] = hz;
-				voicePlayedLastSample[note_i] = true;
-				amplitude_t a = voices[note_i].sine(sample_i, hz);
-				s += set_volume(normalize(a), desired_note_volume);
+				voices[note_i].frequency(hz);
+				voices[note_i].activate(true);
+				amplitude_t a = voices[note_i].next();
+				sum_a += a;
 				note_i++;
 			}
 			// deal with dead voices (the remainder)
 			for(size_t n = note_i; n < N_VOICES; ++n) {
-				// the note in the note set corresponding to this #
-				// voice is not playing, but this voice should continue
-				// playing until its wave reaches near zero to avoid pops.
-				frequency_t hz = voicesLastFrequencies[n];
-				amplitude_t a = voices[n].sine(sample_i, hz);
-				
-				if(voicePlayedLastSample[n] && fabs(a) > AMPLITUDE_EPSILON) {
-					persistVoiceUntilZero[n] = true;
-				}
-				
-				if(persistVoiceUntilZero[n]) {
-					if(fabs(a) <= AMPLITUDE_EPSILON) persistVoiceUntilZero[n] = false;
-					else s += set_volume(normalize(a), desired_note_volume);
-				} else {
-					voices[n].resetPhase(sample_i + 1);
-				}
-				
-				voicePlayedLastSample[n] = false;
+				voices[n].activate(false);
+				amplitude_t a = voices[n].next();
+				sum_a += a;
 			}
+			sample_t s = amplitude_to_sample(sum_a);
 			printSample(s);
-			sample_i++;
 		}
 	}
 }
