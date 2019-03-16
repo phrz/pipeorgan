@@ -28,20 +28,17 @@ private:
 	double _θ {0.0}; // signal phase represented as angle (radians)
 	
 	double _calculatePhaseDelta(timecode_t const Δ_sample, frequency_t const f) {
-		double const τ = 2.0 * M_PI;
-		
 		frequency_t const f_sample = static_cast<double>(SAMPLE_RATE);
-		
+		frequency_t const _f = clamp(f, 0.0, MAX_FREQUENCY);
 		// 2*pi * f Hz
 		// ----------- = delta theta (phase shift for d_s sec time shift at f Hz)
 		//   d_s sec
-		double const Δ_θ = τ * f * static_cast<double>(Δ_sample) / f_sample;
+		double const Δ_θ = τ * _f * static_cast<double>(Δ_sample) / f_sample;
 		return Δ_θ;
 	}
 	
 	amplitude_t _nextWithoutFilters() {
 		// calculate the next position of θ
-		double const τ = M_PI * 2.0;
 		timecode_t const Δ_sample = 1U; // assume next sample
 		
 		double const v = this->_targetVolume;
@@ -49,9 +46,9 @@ private:
 		// speculatively calculate this sample's phase delta,
 		// resulting phase, and amplitude. Whether we use it
 		// depends.
-		double const Δ_θ = _calculatePhaseDelta(Δ_sample, this->_targetFrequency);
-		double const θ_speculative = fmod(_θ + Δ_θ, τ);
-		double const a = sin(_θ) * v * v;
+		double const Δ_θ = _calculatePhaseDelta(Δ_sample, this->frequency());
+		double const θ_speculative = radians(_θ + Δ_θ);
+		double const a = applyVolume(sin(_θ), v);
 		
 		// 1. the key is active, so play the signal normally
 		if(_isActive) {

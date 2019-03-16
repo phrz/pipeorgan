@@ -20,6 +20,8 @@
 #include "TrigGenerator.hpp"
 #include "DancingMad.h"
 #include "SineWaveGenerator.h"
+#include "PipeOrganGenerator.h"
+#include "VibratoFilter.h"
 
 using namespace std;
 
@@ -32,13 +34,6 @@ void printSample(sample_t t) {
 	for(size_t i = 0; i < SAMPLE_T_BYTES; ++i) {
 		putchar((t >> 8*i) & 0xFF);
 	}
-}
-
-sample_t set_volume(sample_t s, double volume) {
-	if(volume == 1.0) return s;
-	s = volume * volume * ((double)s - SAMPLE_T_ZERO_POINT);
-	// bring the center of the waveform back to the middle
-	return s - (0.5 * volume * volume * (SAMPLE_T_MAX - SAMPLE_T_ZERO_POINT));
 }
 
 sample_t amplitudeToSample(amplitude_t a) {
@@ -54,14 +49,25 @@ int main() {
 	vector<frequency_t> currentFrequencies {};
 	
 	vector<midi_t> commands {};
-	vector<SineWaveGenerator> voices {};
+	vector<PipeOrganGenerator> voices {};
 	
 	double const baselineVolume = 0.25; // arbitrary, avoids overflow
 	
+	std::array<double, N_DRAWBARS> drawbarSettings {
+		0,7, 8,1,2,0, 0,0,0 // Bassoon 8'
+	};
 	for(size_t i = 0; i < N_VOICES; ++i) {
-		voices.emplace_back();
+		voices.emplace_back(drawbarSettings);
 		voices[i].volume(baselineVolume);
 	}
+	
+	// for testing a simple tone
+//	voices[0].activate(true);
+//	voices[0].frequency(440.0);
+//	for(size_t i = 0; i < 44010; ++i) {
+//		printSample(amplitudeToSample(voices[0].next()));
+//	}
+//	return 0;
 	
 	for(timecode_t tick = 0; tick < MAX_TICK; tick++) {
 		try {

@@ -18,7 +18,7 @@ amplitude_t TrigGenerator::sine(timecode_t t2, frequency_t f) {
 	
 	// compute the angular frequency of the oscilator
 	// in radians
-	frequency_t omega = 2.0 * M_PI * f / this->sampleRate;
+	frequency_t omega = τ * f / this->sampleRate;
 	
 	// compute the complex angular coefficient
 	// cmplx.Exp(complex(0, ω))

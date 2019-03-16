@@ -10,11 +10,10 @@
 #define SoundGenerator_h
 
 #include <vector>
+#include <memory>
 
-class SoundFilter {
-public:
-	virtual amplitude_t next(amplitude_t input) { return input; }; // null filter
-};
+#include "util.h"
+#include "SoundFilter.h"
 
 class SoundGenerator {
 protected:
@@ -24,12 +23,12 @@ protected:
 	double _targetVolume {1.0}; // the volume level requested by the user.
 	virtual amplitude_t _nextWithoutFilters() = 0;
 public:
-	std::vector<SoundFilter> filters {};
+	std::vector<std::shared_ptr<SoundFilter>> filters {};
 	// wraps the custom _nextWithoutFilters and applies all filters
 	amplitude_t next() {
 		amplitude_t a = _nextWithoutFilters();
-		for(auto filter: filters) {
-			a = filter.next(a);
+		for(auto& filter: filters) {
+			a = filter->modulateAmplitude(a);
 		}
 		return a;
 	}
@@ -45,8 +44,15 @@ class VariableFrequencySoundGenerator: public SoundGenerator {
 protected:
 	frequency_t _targetFrequency {CONCERT_A}; // the target frequency
 public:
-	frequency_t frequency() { return this->_targetFrequency; }
-	void frequency(frequency_t f) { this->_targetFrequency = abs(f); }
+	frequency_t frequency() {
+		// account for filters
+		frequency_t f = this->_targetFrequency;
+		for(auto&& filter: filters) {
+			f = filter->modulateFrequency(f);
+		}
+		return f;
+	}
+	void frequency(frequency_t f) { this->_targetFrequency = f; }
 };
 
 #endif /* SoundGenerator_h */
