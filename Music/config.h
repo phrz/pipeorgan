@@ -42,4 +42,7 @@ static timecode_t const SAMPLES_PER_TICK {2000};
 
 static frequency_t const CONCERT_A = 440.;
 
+static size_t const N_MIDI_CODES = 88;
+static midi_t const MIN_MIDI_CODE = 21;
+
 #endif /* config_h */

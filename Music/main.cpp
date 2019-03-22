@@ -43,10 +43,9 @@ sample_t amplitudeToSample(amplitude_t a) {
 }
 
 int main() {
-	size_t const N_VOICES = 20;
+	size_t const N_VOICES = N_MIDI_CODES;
 	
 	set<midi_t> currentNotes {};
-	vector<frequency_t> currentFrequencies {};
 	
 	vector<midi_t> commands {};
 	vector<PipeOrganGenerator> voices {};
@@ -59,6 +58,7 @@ int main() {
 	for(size_t i = 0; i < N_VOICES; ++i) {
 		voices.emplace_back(drawbarSettings);
 		voices[i].volume(baselineVolume);
+		voices[i].frequency(midiNumberToFrequency(MIN_MIDI_CODE + i));
 	}
 	
 	// for testing a simple tone
@@ -87,32 +87,26 @@ int main() {
 			}
 		}
 		
-		// now that currentNotes reflects the notes being played
-		// this tick, calculate `s`, the integer representing the sample value
-		// at this second.
-		currentFrequencies.clear();
-		for(midi_t midiNote : currentNotes) {
-			frequency_t fundamental = midiNumberToFrequency(midiNote);
-			currentFrequencies.push_back(fundamental);
-		}
-		
 		for(timecode_t i = 0; i < SAMPLES_PER_TICK; ++i) {
 			amplitude_t sum_a {0.0};
-			size_t note_i {0U};
-			// deal with active voices (corresponding to active notes)
-			for(frequency_t hz : currentFrequencies) {
-				voices[note_i].frequency(hz);
-				voices[note_i].activate(true);
-				amplitude_t a = voices[note_i].next();
-				sum_a += a;
-				note_i++;
+			
+			for(midi_t note_i = 0; note_i < N_VOICES; note_i++) {
+				midi_t m = MIN_MIDI_CODE + note_i;
+				// active notes
+				if(currentNotes.count(m) == 1) {
+					voices[note_i].activate(true);
+					amplitude_t a = voices[note_i].next();
+					sum_a += a;
+					note_i++;
+				}
+				// dead notes
+				else {
+					voices[note_i].activate(false);
+					amplitude_t a = voices[note_i].next();
+					sum_a += a;
+				}
 			}
-			// deal with dead voices (the remainder)
-			for(size_t n = note_i; n < N_VOICES; ++n) {
-				voices[n].activate(false);
-				amplitude_t a = voices[n].next();
-				sum_a += a;
-			}
+			
 			sample_t s = amplitudeToSample(sum_a);
 			printSample(s);
 		}
