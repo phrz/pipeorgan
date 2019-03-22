@@ -33,11 +33,11 @@ public:
 		return a;
 	}
 	
-	bool isActive() { return this->_isActive; }
-	void activate(bool a) { this->_isActive = a; }
+	virtual bool isActive() { return this->_isActive; }
+	virtual void activate(bool a) { this->_isActive = a; }
 	
-	double volume() { return this->_targetVolume; }
-	void volume(double v) { this->_targetVolume = v; }
+	virtual double volume() { return this->_targetVolume; }
+	virtual void volume(double v) { this->_targetVolume = v; }
 };
 
 class VariableFrequencySoundGenerator: public SoundGenerator {

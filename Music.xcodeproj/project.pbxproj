@@ -37,6 +37,7 @@
 		27373844223D601F007C2F72 /* SoundFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoundFilter.h; sourceTree = "<group>"; };
 		27373845223D603E007C2F72 /* VibratoFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VibratoFilter.h; sourceTree = "<group>"; };
 		27373846223D745F007C2F72 /* PipeOrganGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PipeOrganGenerator.h; sourceTree = "<group>"; };
+		278CE2F1223DC8F500863F18 /* EnvelopeGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EnvelopeGenerator.h; sourceTree = "<group>"; };
 		278EA591223B2C58002A67FD /* Sheet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sheet.h; sourceTree = "<group>"; };
 		278EA592223B35F2002A67FD /* DancingMad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DancingMad.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				2737383E223C0500007C2F72 /* SoundGenerator.h */,
+				278CE2F1223DC8F500863F18 /* EnvelopeGenerator.h */,
 				27373840223C7A9A007C2F72 /* SineWaveGenerator.h */,
 				27373846223D745F007C2F72 /* PipeOrganGenerator.h */,
 			);
@@ -303,6 +305,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = M8MME6Q9DA;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/sfml/2.4.2_1/lib,
