@@ -37,7 +37,6 @@ static frequency_t const MAX_FREQUENCY = 22000.0;
 static double const AMPLITUDE_EPSILON = 0.01;
 
 static timecode_t const SAMPLE_RATE {22050};
-static timecode_t const MAX_TICK {1008U};
 static timecode_t const SAMPLES_PER_TICK {2000};
 
 static frequency_t const CONCERT_A = 440.;

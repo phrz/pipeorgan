@@ -19,6 +19,7 @@
 #include "config.h"
 #include "TrigGenerator.hpp"
 #include "DancingMad.h"
+#include "SimpleTestSong.h"
 #include "SineWaveGenerator.h"
 #include "PipeOrganGenerator.h"
 #include "VibratoFilter.h"
@@ -69,25 +70,10 @@ int main() {
 //	}
 //	return 0;
 	
-	for(timecode_t tick = 0; tick < MAX_TICK; tick++) {
-		try {
-			commands = dancingMadEvents.at(tick);
-		} catch(out_of_range e) {
-			commands.clear();
-		}
-		// `commands` now contains the commands for this tick,
-		// though it may be empty. A positive number is a new note,
-		// and a negative number denotes that the positive equivalent
-		// should be removed.
-		for(midi_t command : commands) {
-			if(command > 0) {
-				currentNotes.insert(command);
-			} else {
-				currentNotes.erase(-1 * command);
-			}
-		}
-		
-		for(timecode_t i = 0; i < SAMPLES_PER_TICK; ++i) {
+	for(auto [delta, commands]: simpleTestEvents) {
+		// first: we play the current notes for the duration of
+		// delta * samples per tick.
+		for(timecode_t i = 0; i < delta * SAMPLES_PER_TICK; ++i) {
 			amplitude_t sum_a {0.0};
 			
 			for(midi_t note_i = 0; note_i < N_VOICES; note_i++) {
@@ -109,6 +95,14 @@ int main() {
 			
 			sample_t s = amplitudeToSample(sum_a);
 			printSample(s);
+		}
+		// next: we account for new notes
+		for(auto command : commands) {
+			if(command > 0) {
+				currentNotes.insert(command);
+			} else {
+				currentNotes.erase(-1 * command);
+			}
 		}
 	}
 }

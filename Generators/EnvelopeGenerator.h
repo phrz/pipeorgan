@@ -25,9 +25,8 @@ protected:
 	double _releaseDuration {0.0}; // begins at end of note
 	
 	bool _isReleaseActive {false};
-	// keeps track of point in release period
-	// OR point in note activated period
-	size_t _samplesInNoteState {0U};
+	size_t _samplesInActiveState {0U};
+	size_t _samplesInReleaseState {0U};
 	
 	amplitude_t _nextWithoutFilters() override {
 		// activate whether this note is active or we're in release
@@ -38,7 +37,9 @@ protected:
 		
 		amplitude_t a = _innerGenerator->next();
 		
-		if(_isReleaseActive || _isActive) _samplesInNoteState++;
+		if(_isActive) _samplesInActiveState++;
+		// always increment to allow release and attack to blend
+		_samplesInReleaseState++;
 		
 		return a;
 	}
@@ -72,13 +73,14 @@ public:
 		
 		// switching from off to on
 		if(!this->_isActive && a) {
-			_isReleaseActive = false;
-			_samplesInNoteState = 0U;
+			// leave release active to allow attack+release blending
+			// _isReleaseActive = false;
+			_samplesInActiveState = 0U;
 		}
 		// switching from on to off
 		else if(this->_isActive && !a) {
-			_isReleaseActive = true;
-			_samplesInNoteState = 0U;
+			 _isReleaseActive = true;
+			_samplesInReleaseState = 0U;
 		}
 		
 		this->_isActive = a;
@@ -88,39 +90,35 @@ public:
 		// return the calculated volume rather than the provided target volume.
 		frequency_t const f_sample = static_cast<double>(SAMPLE_RATE);
 		
-		// time so far into either note active state, or release state.
-		double const timeInState = static_cast<double>(_samplesInNoteState) / f_sample;
+		double const timeInRelease = static_cast<double>(_samplesInReleaseState) / f_sample;
 		
+		double attackFactor {0.0}, releaseFactor {0.0};
+		
+		// ATTACK / SUSTAIN
 		if(_isActive) {
-			double v = _targetVolume;
+			double const timeInActive = static_cast<double>(_samplesInActiveState) / f_sample;
 			
-			// ATTACK
-			double attackFactor = 1.0;
-			// floating point safety
-			if(timeInState < _attackDuration && _attackDuration > ε_adsr) {
-				attackFactor = saturate(timeInState / _attackDuration);
+			if(_attackDuration < ε_adsr || timeInActive > _attackDuration) {
+				attackFactor = 1.0;
+			} else {
+				attackFactor = saturate(timeInActive / _attackDuration);
 			}
-			v *= attackFactor;
-			
-			// DECAY: TODO
-			
-			// SUSTAIN (default)
-			return v;
 		}
 		// RELEASE
-		else if(_isReleaseActive && _releaseDuration > ε_adsr) {
-			// seconds into release
-			
-			if(timeInState > _releaseDuration) {
-				_isReleaseActive = false;
-				return 0.0;
-			}
-			// reduces from 1.0 to 0.0 as end of release phase approaches
-			double const releaseFactor = 1.0 - saturate(timeInState / _releaseDuration);
-			return clamp(_targetVolume * releaseFactor, 0.0, _targetVolume);
+		if(_releaseDuration > ε_adsr && timeInRelease < _releaseDuration) {
+			// we don't worry about turning off isReleaseActive so that release
+			// can blend with attack when _isActive changes to true during
+			// release phase. We DO worry about isReleaseActive for other reasons.
+			releaseFactor = 1.0 - saturate(timeInRelease / _releaseDuration);
+		} else {
+			// we ONLY set this to keep track of keeping inner generator on/off.
+			_isReleaseActive = false;
 		}
 		
-		return 0.0;
+		// finding the max prevents a newly played note from beginning at
+		// zero volume (attack) during the release of a prior note, which
+		// causes clicking due to drop out and does not sound natural.
+		return _targetVolume * fmax(attackFactor, releaseFactor);
 	}
 	
 	void volume(double v) override {

@@ -40,6 +40,7 @@
 		278CE2F1223DC8F500863F18 /* EnvelopeGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EnvelopeGenerator.h; sourceTree = "<group>"; };
 		278EA591223B2C58002A67FD /* Sheet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sheet.h; sourceTree = "<group>"; };
 		278EA592223B35F2002A67FD /* DancingMad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DancingMad.h; sourceTree = "<group>"; };
+		279385152246B78E00288A2A /* SimpleTestSong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleTestSong.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +81,7 @@
 				27373841223D55D2007C2F72 /* util.h */,
 				2702633B2235A1EC008B5910 /* main.cpp */,
 				278EA592223B35F2002A67FD /* DancingMad.h */,
+				279385152246B78E00288A2A /* SimpleTestSong.h */,
 				278EA591223B2C58002A67FD /* Sheet.h */,
 			);
 			path = Music;
