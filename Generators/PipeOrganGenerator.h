@@ -32,7 +32,7 @@ public:
 			_drawbarVibratos[i]->intensity = 5.0;
 			_drawbars[i].filters.push_back(_drawbarVibratos[i]);
 			
-			_drawbars[i].releaseDuration(1.0);
+			_drawbars[i].releaseDuration(0.5);
 			_drawbars[i].attackDuration(0.15);
 			
 			_drawbars[i].volume(clamp(dbs[i], 0.0, 8.0) / 8.0);

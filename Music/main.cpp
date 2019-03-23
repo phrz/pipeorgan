@@ -17,12 +17,9 @@
 #include <array>
 
 #include "config.h"
-#include "TrigGenerator.hpp"
 #include "DancingMad.h"
-#include "SimpleTestSong.h"
-#include "SineWaveGenerator.h"
+
 #include "PipeOrganGenerator.h"
-#include "VibratoFilter.h"
 
 using namespace std;
 
@@ -70,9 +67,12 @@ int main() {
 //	}
 //	return 0;
 	
-	for(auto [delta, commands]: simpleTestEvents) {
+	timecode_t lastTick = 0U;
+	for(auto [tick, commands]: dancingMadEvents) {
 		// first: we play the current notes for the duration of
 		// delta * samples per tick.
+		timecode_t delta = tick - lastTick;
+		lastTick = tick;
 		for(timecode_t i = 0; i < delta * SAMPLES_PER_TICK; ++i) {
 			amplitude_t sum_a {0.0};
 			
