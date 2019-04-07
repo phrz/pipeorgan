@@ -13,7 +13,7 @@
 #include <memory>
 
 #include "SoundGenerator.h"
-#include "SineWaveGenerator.h"
+#include "SimpleSineWaveGenerator.h"
 #include "EnvelopeGenerator.h"
 #include "VibratoFilter.h"
 #include "util.h"
@@ -23,7 +23,8 @@ protected:
 	constexpr static std::array<double, N_DRAWBARS> const _drawbarHarmonics {
 		0.5, 1.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0
 	};
-	std::array<EnvelopeGenerator<SineWaveGenerator>, N_DRAWBARS> _drawbars {EnvelopeGenerator<SineWaveGenerator>()};
+	using SineEnvelope = EnvelopeGenerator<SimpleSineWaveGenerator>;
+	std::array<SineEnvelope, N_DRAWBARS> _drawbars {SineEnvelope()};
 	std::array<std::shared_ptr<VibratoFilter>, N_DRAWBARS> _drawbarVibratos {};
 public:
 	PipeOrganGenerator(std::array<double, N_DRAWBARS> const& dbs) {
@@ -32,8 +33,8 @@ public:
 			_drawbarVibratos[i]->intensity = 5.0;
 			_drawbars[i].filters.push_back(_drawbarVibratos[i]);
 			
-			_drawbars[i].releaseDuration(0.5);
-			_drawbars[i].attackDuration(0.15);
+			_drawbars[i].releaseDuration(0.25);
+			_drawbars[i].attackDuration(0.1);
 			
 			_drawbars[i].volume(clamp(dbs[i], 0.0, 8.0) / 8.0);
 		}
