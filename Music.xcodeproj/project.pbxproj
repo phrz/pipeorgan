@@ -41,6 +41,7 @@
 		278EA591223B2C58002A67FD /* Sheet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sheet.h; sourceTree = "<group>"; };
 		278EA592223B35F2002A67FD /* DancingMad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DancingMad.h; sourceTree = "<group>"; };
 		279385152246B78E00288A2A /* SimpleTestSong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleTestSong.h; sourceTree = "<group>"; };
+		27DF6218225A55F100335089 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +58,7 @@
 		2702632F2235A1EC008B5910 = {
 			isa = PBXGroup;
 			children = (
+				27DF6218225A55F100335089 /* .gitignore */,
 				2702633A2235A1EC008B5910 /* Music */,
 				2737383F223C066D007C2F72 /* Generators */,
 				27373843223D5633007C2F72 /* Filters */,
