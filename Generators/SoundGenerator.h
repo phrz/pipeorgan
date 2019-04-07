@@ -44,7 +44,7 @@ class VariableFrequencySoundGenerator: public SoundGenerator {
 protected:
 	frequency_t _targetFrequency {CONCERT_A}; // the target frequency
 public:
-	frequency_t frequency() {
+	virtual frequency_t frequency() {
 		// account for filters
 		frequency_t f = this->_targetFrequency;
 		for(auto&& filter: filters) {
@@ -52,7 +52,7 @@ public:
 		}
 		return f;
 	}
-	void frequency(frequency_t f) { this->_targetFrequency = f; }
+	virtual void frequency(frequency_t f) { this->_targetFrequency = f; }
 };
 
 #endif /* SoundGenerator_h */

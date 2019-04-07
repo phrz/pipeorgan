@@ -26,6 +26,7 @@ private:
 	bool _persistSignalUntilZero {false};
 	
 	double _θ {0.0}; // signal phase represented as angle (radians)
+	double _Δ_θ {0.0}; // phase delta (radians), only recalc. when frequency changes.
 	
 	double _calculatePhaseDelta(timecode_t const Δ_sample, frequency_t const f) {
 		frequency_t const f_sample = static_cast<double>(SAMPLE_RATE);
@@ -37,17 +38,13 @@ private:
 		return Δ_θ;
 	}
 	
-	amplitude_t _nextWithoutFilters() {
-		// calculate the next position of θ
-		timecode_t const Δ_sample = 1U; // assume next sample
-		
+	amplitude_t _nextWithoutFilters() override {
 		double const v = this->_targetVolume;
 		
 		// speculatively calculate this sample's phase delta,
 		// resulting phase, and amplitude. Whether we use it
 		// depends.
-		double const Δ_θ = _calculatePhaseDelta(Δ_sample, this->frequency());
-		double const θ_speculative = radians(_θ + Δ_θ);
+		double const θ_speculative = radians(_θ + _Δ_θ);
 		double const a = applyVolume(sin(_θ), v);
 		
 		// 1. the key is active, so play the signal normally
@@ -86,6 +83,13 @@ private:
 		// 4. the key isn't pressed, the key wasn't pressed last sample, and
 		//    we did not decide earlier to persist the signal past key-up.
 		return 0.0;
+	}
+public:
+	void frequency(frequency_t f) override {
+		timecode_t const Δ_sample = 1U; // assume next sample
+		
+		this->_targetFrequency = f;
+		this->_Δ_θ = _calculatePhaseDelta(Δ_sample, f);
 	}
 };
 
