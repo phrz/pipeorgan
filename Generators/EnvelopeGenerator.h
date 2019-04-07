@@ -33,6 +33,9 @@ protected:
 			_targetVolume * _smoothingRate;
 		
 		_envelopeVolume = saturate(_envelopeVolume + _envelopeVelocity);
+		// check if we need to reset velocity to stop decay.
+		if(_resetVelocityCountdown == 0) _envelopeVelocity = 0;
+		if(_resetVelocityCountdown != -1) _resetVelocityCountdown--;
 		
 		// activate whether this note is active or we're in release
 		_innerGenerator->activate(this->isActive());
@@ -48,6 +51,9 @@ protected:
 	// if ==1, no smoothing. If 0.1, it takes 10 samples to smooth.
 	double const _smoothingRate {0.001};
 	double _smoothedTargetVolume {0.0};
+	
+	// if ==0, reset velocity (used to stop decay at sustain volume)
+	int _resetVelocityCountdown {-1};
 public:
 	EnvelopeGenerator(Args&&... args): _innerGenerator(std::make_shared<Generator>(args...)) {
 		static_assert(
@@ -57,6 +63,14 @@ public:
 	
 	void attackDuration(double a) {
 		this->_attackDuration = clamp(a, 0.0, 60.0);
+	}
+	
+	void decayDuration(double d) {
+		this->_decayDuration = clamp(d, 0.0, 60.0);
+	}
+	
+	void sustainVolume(double s) {
+		this->_sustainVolume = saturate(s);
 	}
 	
 	void releaseDuration(double r) {
@@ -73,6 +87,7 @@ public:
 	virtual void activate(bool a) override {
 		frequency_t const f_sample = static_cast<double>(SAMPLE_RATE);
 		
+		// switching from off to on
 		// (beginning attack)
 		if(!this->_isActive && a) {
 			// if attackDuration is near 0, instantaneous.
@@ -87,12 +102,21 @@ public:
 		// switching from on to off
 		// (beginning release)
 		else if(this->_isActive && !a) {
+			_resetVelocityCountdown = -1;
 			if(_releaseDuration < ε_adsr) {
 				_envelopeVelocity = 0.0;
 				_envelopeVolume = 0.0;
 			} else {
 				_envelopeVelocity = -1.0 / (_releaseDuration * f_sample);
 			}
+		}
+		// note is already playing, and attack is done
+		// only decay to sustain volume if we have a reasonable decay dur.
+		// check resetVelocityCountdown so as to only begin decay once.
+		else if(this->_isActive && a && abs(_envelopeVolume - 1.0) < ε_adsr && _decayDuration > ε_adsr && _resetVelocityCountdown == -1) {
+			double decayForSamples = _decayDuration * f_sample;
+			_envelopeVelocity = (_sustainVolume - 1.0) / decayForSamples;
+			_resetVelocityCountdown = round(decayForSamples);
 		}
 		
 		this->_isActive = a;

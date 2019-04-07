@@ -18,8 +18,6 @@
 
 #include "config.h"
 #include "DancingMad.h"
-
-#include "PipeOrganGenerator.h"
 #include "PipeOrgan.h"
 
 using namespace std;
@@ -37,7 +35,12 @@ sample_t amplitudeToSample(amplitude_t a) {
 }
 
 int main() {	
-	PipeOrgan organ {{0,7, 8,1,2,0, 0,0,0}}; // Bassoon 8'
+	PipeOrgan organ {
+		//{0,7, 8,1,2,0, 0,0,0} // Bassoon 8' (used .4/.1 attack/release)
+		{0,0, 8,8,8,0, 0,0,0}, // "classic" Jimmy Smith (harpsicord .2/.04 a/r)
+		// A D S R envelope
+		.1,.05,.1,.02
+	};
 	
 	double const baselineVolume = 0.25; // arbitrary, avoids overflow
 	

@@ -13,7 +13,7 @@
 #include <map>
 #include "SoundGenerator.h"
 #include "EnvelopeGenerator.h"
-#include "RawSineWaveGenerator.h"
+#include "SimpleSineWaveGenerator.h"
 #include "util.h"
 
 // the following drawbar harmonics:
@@ -25,15 +25,29 @@ class PipeOrgan {
 private:
 	using _SineEnvelope = EnvelopeGenerator<SimpleSineWaveGenerator>;
 	using _Pipe = std::shared_ptr<_SineEnvelope>;
+	
+	double const _organAttackDuration;
+	double const _organDecayDuration;
+	double const _organSustainVolume;
+	double const _organReleaseDuration;
+	
 	_Pipe makePipe(frequency_t f) {
 		auto pipe = std::make_shared<_SineEnvelope>();
+		// this pipe will only ever have one frequency.
 		pipe->innerGenerator()->frequency(f);
-		pipe->releaseDuration(0.4);
-		pipe->attackDuration(0.1);
+		
+		// set the pipe's ADSR envelope based on the organ's global envelope.
+		pipe->attackDuration(_organReleaseDuration);
+		pipe->decayDuration(_organDecayDuration);
+		pipe->sustainVolume(_organSustainVolume);
+		pipe->releaseDuration(_organAttackDuration);
+		
 		return pipe;
 	}
 	
-	constexpr static std::array<midi_t, N_DRAWBARS> const _drawbarOffsets {-12, 7, 0, 12, 19, 24, 28, 31, 36};
+	constexpr static std::array<midi_t, N_DRAWBARS> const
+		_drawbarOffsets {-12, 7, 0, 12, 19, 24, 28, 31, 36};
+	
 	std::array<double, N_DRAWBARS> _drawbarVolumes {0.0};
 	
 	std::map<midi_t, _Pipe> _pipes {};
@@ -48,9 +62,20 @@ private:
 	// to distinguish it being active as part of being a harmonic
 	std::map<midi_t, bool> _keysActive {};
 public:
-	PipeOrgan(std::array<double, N_DRAWBARS> const d) {
+	PipeOrgan(
+		std::array<double, N_DRAWBARS> const dvs, // drawbar volumes 0.0-8.0
+		double a,
+		double d,
+		double s,
+		double r
+	):
+		_organAttackDuration(a),
+		_organDecayDuration(d),
+		_organSustainVolume(s),
+		_organReleaseDuration(r)
+	{
 		for(size_t i = 0; i < N_DRAWBARS; i++) {
-			_drawbarVolumes[i] = saturate(d[i] / 8.0);
+			_drawbarVolumes[i] = saturate(dvs[i] / 8.0);
 		}
 		// these midi codes are not compliant (not between 21-108 inclusive)
 		// but are used to represent subharmonics and harmonics outside the

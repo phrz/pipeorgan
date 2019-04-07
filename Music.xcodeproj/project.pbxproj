@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2702633C2235A1EC008B5910 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2702633B2235A1EC008B5910 /* main.cpp */; };
-		270263492235A636008B5910 /* TrigGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 270263472235A636008B5910 /* TrigGenerator.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,23 +27,18 @@
 		2702633B2235A1EC008B5910 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		270263432235A22A008B5910 /* libsfml-audio.2.4.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libsfml-audio.2.4.2.dylib"; path = "../../../../usr/local/Cellar/sfml/2.4.2_1/lib/libsfml-audio.2.4.2.dylib"; sourceTree = "<group>"; };
 		270263442235A22A008B5910 /* libsfml-system.2.4.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libsfml-system.2.4.2.dylib"; path = "../../../../usr/local/Cellar/sfml/2.4.2_1/lib/libsfml-system.2.4.2.dylib"; sourceTree = "<group>"; };
-		270263472235A636008B5910 /* TrigGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TrigGenerator.cpp; sourceTree = "<group>"; };
-		270263482235A636008B5910 /* TrigGenerator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TrigGenerator.hpp; sourceTree = "<group>"; };
 		2702634A2235A6A7008B5910 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		2737383E223C0500007C2F72 /* SoundGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoundGenerator.h; sourceTree = "<group>"; };
 		27373840223C7A9A007C2F72 /* SineWaveGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SineWaveGenerator.h; sourceTree = "<group>"; };
 		27373841223D55D2007C2F72 /* util.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		27373844223D601F007C2F72 /* SoundFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoundFilter.h; sourceTree = "<group>"; };
 		27373845223D603E007C2F72 /* VibratoFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VibratoFilter.h; sourceTree = "<group>"; };
-		27373846223D745F007C2F72 /* PipeOrganGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PipeOrganGenerator.h; sourceTree = "<group>"; };
 		278CE2F1223DC8F500863F18 /* EnvelopeGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EnvelopeGenerator.h; sourceTree = "<group>"; };
 		278EA591223B2C58002A67FD /* Sheet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sheet.h; sourceTree = "<group>"; };
 		278EA592223B35F2002A67FD /* DancingMad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DancingMad.h; sourceTree = "<group>"; };
-		279385152246B78E00288A2A /* SimpleTestSong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleTestSong.h; sourceTree = "<group>"; };
 		27DF6218225A55F100335089 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		27DF6219225A593C00335089 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		27DF621A225A607800335089 /* SimpleSineWaveGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleSineWaveGenerator.h; sourceTree = "<group>"; };
-		27DF621B225A69F500335089 /* RawSineWaveGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RawSineWaveGenerator.h; sourceTree = "<group>"; };
 		27DF621C225A6E7500335089 /* PipeOrgan.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PipeOrgan.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,7 +61,6 @@
 				2702633A2235A1EC008B5910 /* Music */,
 				2737383F223C066D007C2F72 /* Generators */,
 				27373843223D5633007C2F72 /* Filters */,
-				27373842223D561F007C2F72 /* Phasor */,
 				270263392235A1EC008B5910 /* Products */,
 				270263422235A22A008B5910 /* Frameworks */,
 			);
@@ -84,11 +77,10 @@
 		2702633A2235A1EC008B5910 /* Music */ = {
 			isa = PBXGroup;
 			children = (
+				2702633B2235A1EC008B5910 /* main.cpp */,
 				2702634A2235A6A7008B5910 /* config.h */,
 				27373841223D55D2007C2F72 /* util.h */,
-				2702633B2235A1EC008B5910 /* main.cpp */,
 				278EA592223B35F2002A67FD /* DancingMad.h */,
-				279385152246B78E00288A2A /* SimpleTestSong.h */,
 				278EA591223B2C58002A67FD /* Sheet.h */,
 				27DF621C225A6E7500335089 /* PipeOrgan.h */,
 			);
@@ -110,20 +102,9 @@
 				2737383E223C0500007C2F72 /* SoundGenerator.h */,
 				278CE2F1223DC8F500863F18 /* EnvelopeGenerator.h */,
 				27373840223C7A9A007C2F72 /* SineWaveGenerator.h */,
-				27DF621B225A69F500335089 /* RawSineWaveGenerator.h */,
 				27DF621A225A607800335089 /* SimpleSineWaveGenerator.h */,
-				27373846223D745F007C2F72 /* PipeOrganGenerator.h */,
 			);
 			path = Generators;
-			sourceTree = "<group>";
-		};
-		27373842223D561F007C2F72 /* Phasor */ = {
-			isa = PBXGroup;
-			children = (
-				270263482235A636008B5910 /* TrigGenerator.hpp */,
-				270263472235A636008B5910 /* TrigGenerator.cpp */,
-			);
-			path = Phasor;
 			sourceTree = "<group>";
 		};
 		27373843223D5633007C2F72 /* Filters */ = {
@@ -193,7 +174,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2702633C2235A1EC008B5910 /* main.cpp in Sources */,
-				270263492235A636008B5910 /* TrigGenerator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
