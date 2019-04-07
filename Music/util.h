@@ -48,4 +48,9 @@ amplitude_t applyVolume(amplitude_t a, double v) {
 	return a * _v * _v;
 }
 
+// [CITE] http://subsynth.sourceforge.net/midinote2freq.html
+frequency_t midiNumberToFrequency(midi_t midiNumber) {
+	return (CONCERT_A / 32.) * pow(2., (midiNumber - 9) / 12.);
+}
+
 #endif /* util_h */

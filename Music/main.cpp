@@ -20,13 +20,9 @@
 #include "DancingMad.h"
 
 #include "PipeOrganGenerator.h"
+#include "PipeOrgan.h"
 
 using namespace std;
-
-// [CITE] http://subsynth.sourceforge.net/midinote2freq.html
-frequency_t midiNumberToFrequency(midi_t midiNumber) {
-	return (CONCERT_A / 32.) * pow(2., (midiNumber - 9) / 12.);
-}
 
 void printSample(sample_t t) {
 	for(size_t i = 0; i < SAMPLE_T_BYTES; ++i) {
@@ -40,32 +36,10 @@ sample_t amplitudeToSample(amplitude_t a) {
 	return a * SAMPLE_T_MAX;
 }
 
-int main() {
-	size_t const N_VOICES = N_MIDI_CODES;
-	
-	set<midi_t> currentNotes {};
-	
-	vector<midi_t> commands {};
-	vector<PipeOrganGenerator> voices {};
+int main() {	
+	PipeOrgan organ {{0,7, 8,1,2,0, 0,0,0}}; // Bassoon 8'
 	
 	double const baselineVolume = 0.25; // arbitrary, avoids overflow
-	
-	std::array<double, N_DRAWBARS> drawbarSettings {
-		0,7, 8,1,2,0, 0,0,0 // Bassoon 8'
-	};
-	for(size_t i = 0; i < N_VOICES; ++i) {
-		voices.emplace_back(drawbarSettings);
-		voices[i].volume(baselineVolume);
-		voices[i].frequency(midiNumberToFrequency(MIN_MIDI_CODE + i));
-	}
-	
-	// for testing a simple tone
-//	voices[0].activate(true);
-//	voices[0].frequency(440.0);
-//	for(size_t i = 0; i < 44010; ++i) {
-//		printSample(amplitudeToSample(voices[0].next()));
-//	}
-//	return 0;
 	
 	timecode_t lastTick = 0U;
 	for(auto [tick, commands]: dancingMadEvents) {
@@ -74,34 +48,17 @@ int main() {
 		timecode_t delta = tick - lastTick;
 		lastTick = tick;
 		for(timecode_t i = 0; i < delta * SAMPLES_PER_TICK; ++i) {
-			amplitude_t sum_a {0.0};
-			
-			for(midi_t note_i = 0; note_i < N_VOICES; note_i++) {
-				midi_t m = MIN_MIDI_CODE + note_i;
-				// active notes
-				if(currentNotes.count(m) == 1) {
-					voices[note_i].activate(true);
-					amplitude_t a = voices[note_i].next();
-					sum_a += a;
-					note_i++;
-				}
-				// dead notes
-				else {
-					voices[note_i].activate(false);
-					amplitude_t a = voices[note_i].next();
-					sum_a += a;
-				}
-			}
-			
-			sample_t s = amplitudeToSample(sum_a);
-			printSample(s);
+			printSample(
+				amplitudeToSample(
+					applyVolume(
+						organ.next(), baselineVolume)));
 		}
 		// next: we account for new notes
 		for(auto command : commands) {
 			if(command > 0) {
-				currentNotes.insert(command);
+				organ.setKey(command, true);
 			} else {
-				currentNotes.erase(-1 * command);
+				organ.setKey(-1 * command, false);
 			}
 		}
 	}

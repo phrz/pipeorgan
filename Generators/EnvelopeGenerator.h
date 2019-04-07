@@ -28,6 +28,10 @@ protected:
 	double _envelopeVelocity {0.0}; // rate at which to change envelopeVolume
 	
 	amplitude_t _nextWithoutFilters() override {
+		_smoothedTargetVolume =
+			_smoothedTargetVolume * (1.0 - _smoothingRate) +
+			_targetVolume * _smoothingRate;
+		
 		_envelopeVolume = saturate(_envelopeVolume + _envelopeVelocity);
 		
 		// activate whether this note is active or we're in release
@@ -40,6 +44,10 @@ protected:
 		
 		return a;
 	}
+	
+	// if ==1, no smoothing. If 0.1, it takes 10 samples to smooth.
+	double const _smoothingRate {0.001};
+	double _smoothedTargetVolume {0.0};
 public:
 	EnvelopeGenerator(Args&&... args): _innerGenerator(std::make_shared<Generator>(args...)) {
 		static_assert(
@@ -59,7 +67,7 @@ public:
 		// return whether we are active OR in the release phase of the
 		// envelope, determined by the time since deactivation being less
 		// than the provided release duration.
-		return this->_envelopeVolume >= ε_adsr;
+		return this->volume() >= ε_adsr;
 	}
 	
 	virtual void activate(bool a) override {
@@ -93,7 +101,7 @@ public:
 	double volume() override {
 		// return the calculated volume rather than the provided target volume.
 		// scale envelope volume by user-provided volume as our ceiling.
-		return _envelopeVolume * _targetVolume;
+		return _envelopeVolume * _smoothedTargetVolume;
 	}
 	
 	void volume(double v) override {

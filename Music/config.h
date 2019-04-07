@@ -44,4 +44,13 @@ static frequency_t const CONCERT_A = 440.;
 static size_t const N_MIDI_CODES = 88;
 static midi_t const MIN_MIDI_CODE = 21;
 
+// must be <=21 to play MIDI music. Smaller == lower subharmonics.
+// represented as pseudo-midi codes (because it can be < smallest allowable
+// midi code)
+static midi_t const MIN_ORGAN_MIDI_CODE = 0;
+
+// must be >=108 to play MIDI music. Bigger == higher harmonics.
+// represented as pseudo-midi codes (because it can be > largest allowable
+// midi code)
+static midi_t const MAX_ORGAN_MIDI_CODE = 150;
 #endif /* config_h */

@@ -44,6 +44,8 @@
 		27DF6218225A55F100335089 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		27DF6219225A593C00335089 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		27DF621A225A607800335089 /* SimpleSineWaveGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleSineWaveGenerator.h; sourceTree = "<group>"; };
+		27DF621B225A69F500335089 /* RawSineWaveGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RawSineWaveGenerator.h; sourceTree = "<group>"; };
+		27DF621C225A6E7500335089 /* PipeOrgan.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PipeOrgan.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 				278EA592223B35F2002A67FD /* DancingMad.h */,
 				279385152246B78E00288A2A /* SimpleTestSong.h */,
 				278EA591223B2C58002A67FD /* Sheet.h */,
+				27DF621C225A6E7500335089 /* PipeOrgan.h */,
 			);
 			path = Music;
 			sourceTree = "<group>";
@@ -107,6 +110,7 @@
 				2737383E223C0500007C2F72 /* SoundGenerator.h */,
 				278CE2F1223DC8F500863F18 /* EnvelopeGenerator.h */,
 				27373840223C7A9A007C2F72 /* SineWaveGenerator.h */,
+				27DF621B225A69F500335089 /* RawSineWaveGenerator.h */,
 				27DF621A225A607800335089 /* SimpleSineWaveGenerator.h */,
 				27373846223D745F007C2F72 /* PipeOrganGenerator.h */,
 			);
