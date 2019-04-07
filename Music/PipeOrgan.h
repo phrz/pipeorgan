@@ -61,6 +61,10 @@ private:
 	// we need to track if a key is directly active (being played)
 	// to distinguish it being active as part of being a harmonic
 	std::map<midi_t, bool> _keysActive {};
+	
+	// a hidden volume parameter to normalize total organ volume based on
+	// the theoretical loudest the organ can be given its drawbar settings
+	double _drawbarCompensationVolume {1.0};
 public:
 	PipeOrgan(
 		std::array<double, N_DRAWBARS> const dvs, // drawbar volumes 0.0-8.0
@@ -74,9 +78,13 @@ public:
 		_organSustainVolume(s),
 		_organReleaseDuration(r)
 	{
+		double drawbarVolumesSum {0.0};
 		for(size_t i = 0; i < N_DRAWBARS; i++) {
 			_drawbarVolumes[i] = saturate(dvs[i] / 8.0);
+			drawbarVolumesSum += _drawbarVolumes[i];
 		}
+		_drawbarCompensationVolume = saturate(1.0 / drawbarVolumesSum);
+		
 		// these midi codes are not compliant (not between 21-108 inclusive)
 		// but are used to represent subharmonics and harmonics outside the
 		// midi defined range.
@@ -92,7 +100,7 @@ public:
 		for(midi_t m = MIN_ORGAN_MIDI_CODE; m <= MAX_ORGAN_MIDI_CODE; m++) {
 			a += _pipes[m]->next();
 		}
-		return a;
+		return applyVolume(a, _drawbarCompensationVolume);
 	}
 	
 	void setKey(midi_t m, bool active) {

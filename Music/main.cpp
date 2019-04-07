@@ -36,13 +36,15 @@ sample_t amplitudeToSample(amplitude_t a) {
 
 int main() {	
 	PipeOrgan organ {
-		//{0,7, 8,1,2,0, 0,0,0} // Bassoon 8' (used .4/.1 attack/release)
-		{0,0, 8,8,8,0, 0,0,0}, // "classic" Jimmy Smith (harpsicord .2/.04 a/r)
+//		{0,7, 8,1,2,0, 0,0,0}, // Bassoon 8' (used .4/.1 attack/release)
+//		{0,6, 8,7,7,7, 7,6,1}, // Bassoon 8' + French Trumpet 8'
+//		{8,8, 4,4,5,5, 6,7,8}, // "calliope-esque"
+		{4,2, 7,8,6,6, 2,4,4}, // Full Great w/ 16' (fff)
 		// A D S R envelope
-		.1,.05,.1,.02
+		.05,0,1,.2
 	};
 	
-	double const baselineVolume = 0.25; // arbitrary, avoids overflow
+	double const baselineVolume = 1.0; // arbitrary, avoids overflow
 	
 	timecode_t lastTick = 0U;
 	for(auto [tick, commands]: dancingMadEvents) {
