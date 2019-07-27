@@ -24,18 +24,14 @@ protected:
 	double _sustainVolume {1.0}; // scale of _targetVolume
 	double _releaseDuration {0.0}; // begins at end of note
 	
-	double _envelopeVolume {0.0};
-	double _envelopeVelocity {0.0}; // rate at which to change envelopeVolume
+	bool _isReleaseActive {false};
+	size_t _samplesInActiveState {0U};
+	size_t _samplesInReleaseState {0U};
 	
 	amplitude_t _nextWithoutFilters() override {
 		_smoothedTargetVolume =
-			_smoothedTargetVolume * (1.0 - _smoothingRate) +
-			_targetVolume * _smoothingRate;
-		
-		_envelopeVolume = saturate(_envelopeVolume + _envelopeVelocity);
-		// check if we need to reset velocity to stop decay.
-		if(_resetVelocityCountdown == 0) _envelopeVelocity = 0;
-		if(_resetVelocityCountdown != -1) _resetVelocityCountdown--;
+		_smoothedTargetVolume * (1.0 - _smoothingRate) +
+		_targetVolume * _smoothingRate;
 		
 		// activate whether this note is active or we're in release
 		_innerGenerator->activate(this->isActive());
@@ -45,20 +41,21 @@ protected:
 		
 		amplitude_t a = _innerGenerator->next();
 		
+		if(_isActive) _samplesInActiveState++;
+		// always increment to allow release and attack to blend
+		_samplesInReleaseState++;
+		
 		return a;
 	}
 	
 	// if ==1, no smoothing. If 0.1, it takes 10 samples to smooth.
 	double const _smoothingRate {0.001};
 	double _smoothedTargetVolume {0.0};
-	
-	// if ==0, reset velocity (used to stop decay at sustain volume)
-	int _resetVelocityCountdown {-1};
 public:
 	EnvelopeGenerator(Args&&... args): _innerGenerator(std::make_shared<Generator>(args...)) {
 		static_assert(
-			std::is_base_of<SoundGenerator, Generator>::value,
-			"Generator not derived from SoundGenerator");
+					  std::is_base_of<SoundGenerator, Generator>::value,
+					  "Generator not derived from SoundGenerator");
 	}
 	
 	void attackDuration(double a) {
@@ -81,42 +78,25 @@ public:
 		// return whether we are active OR in the release phase of the
 		// envelope, determined by the time since deactivation being less
 		// than the provided release duration.
-		return this->volume() >= ε_adsr;
+		return this->_isActive || this->_isReleaseActive;
 	}
 	
 	virtual void activate(bool a) override {
-		frequency_t const f_sample = static_cast<double>(SAMPLE_RATE);
+		// on activation, make note to terminate release.
+		// on deactivation, make note to begin release, to begin downramping
+		// volume on the inner generator, and report continued activation until
+		// zero is reached.
 		
 		// switching from off to on
-		// (beginning attack)
 		if(!this->_isActive && a) {
-			// if attackDuration is near 0, instantaneous.
-			if(_attackDuration < ε_adsr) {
-				_envelopeVelocity = 0.0;
-				_envelopeVolume = 1.0;
-			} else {
-				// convert volume per second to volume per sample
-				_envelopeVelocity = 1.0 / (_attackDuration * f_sample);
-			}
+			// leave release active to allow attack+release blending
+			// _isReleaseActive = false;
+			_samplesInActiveState = 0U;
 		}
 		// switching from on to off
-		// (beginning release)
 		else if(this->_isActive && !a) {
-			_resetVelocityCountdown = -1;
-			if(_releaseDuration < ε_adsr) {
-				_envelopeVelocity = 0.0;
-				_envelopeVolume = 0.0;
-			} else {
-				_envelopeVelocity = -1.0 / (_releaseDuration * f_sample);
-			}
-		}
-		// note is already playing, and attack is done
-		// only decay to sustain volume if we have a reasonable decay dur.
-		// check resetVelocityCountdown so as to only begin decay once.
-		else if(this->_isActive && a && abs(_envelopeVolume - 1.0) < ε_adsr && _decayDuration > ε_adsr && _resetVelocityCountdown == -1) {
-			double decayForSamples = _decayDuration * f_sample;
-			_envelopeVelocity = (_sustainVolume - 1.0) / decayForSamples;
-			_resetVelocityCountdown = round(decayForSamples);
+			_isReleaseActive = true;
+			_samplesInReleaseState = 0U;
 		}
 		
 		this->_isActive = a;
@@ -124,8 +104,38 @@ public:
 	
 	double volume() override {
 		// return the calculated volume rather than the provided target volume.
-		// scale envelope volume by user-provided volume as our ceiling.
-		return _envelopeVolume * _smoothedTargetVolume;
+		frequency_t const f_sample = static_cast<double>(SAMPLE_RATE);
+		
+		double const timeInRelease = static_cast<double>(_samplesInReleaseState) / f_sample;
+		
+		double attackFactor {0.0}, releaseFactor {0.0};
+		
+		// ATTACK / SUSTAIN
+		if(_isActive) {
+			if(_attackDuration < ε_adsr) {
+				attackFactor = 1.0;
+			} else {
+				double const timeInActive = static_cast<double>(_samplesInActiveState) / f_sample;
+				// avoid branching timeInActive > attackDuration with saturate
+				attackFactor = saturate(timeInActive / _attackDuration);
+			}
+		}
+		// RELEASE
+		if(_releaseDuration > ε_adsr && timeInRelease < _releaseDuration) {
+			// we don't worry about turning off isReleaseActive so that release
+			// can blend with attack when _isActive changes to true during
+			// release phase. We DO worry about isReleaseActive for other reasons.
+			releaseFactor = 1.0 - timeInRelease / _releaseDuration;
+			// no saturate: releaseDuration guaranteed greater than timeInRelease
+		} else {
+			// we ONLY set this to keep track of keeping inner generator on/off.
+			_isReleaseActive = false;
+		}
+		
+		// finding the max prevents a newly played note from beginning at
+		// zero volume (attack) during the release of a prior note, which
+		// causes clicking due to drop out and does not sound natural.
+		return clamp(_targetVolume * fmax(attackFactor, releaseFactor), 0.0, _targetVolume);
 	}
 	
 	void volume(double v) override {
