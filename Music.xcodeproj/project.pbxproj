@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2702633C2235A1EC008B5910 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2702633B2235A1EC008B5910 /* main.cpp */; };
+		275A546222EE1FC60002164B /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 275A546122EE1FC60002164B /* Makefile */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,6 +34,7 @@
 		27373841223D55D2007C2F72 /* util.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		27373844223D601F007C2F72 /* SoundFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoundFilter.h; sourceTree = "<group>"; };
 		27373845223D603E007C2F72 /* VibratoFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VibratoFilter.h; sourceTree = "<group>"; };
+		275A546122EE1FC60002164B /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		278CE2F1223DC8F500863F18 /* EnvelopeGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EnvelopeGenerator.h; sourceTree = "<group>"; };
 		278EA591223B2C58002A67FD /* Sheet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sheet.h; sourceTree = "<group>"; };
 		278EA592223B35F2002A67FD /* DancingMad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DancingMad.h; sourceTree = "<group>"; };
@@ -57,10 +59,9 @@
 			isa = PBXGroup;
 			children = (
 				27DF6219225A593C00335089 /* README.md */,
+				275A546122EE1FC60002164B /* Makefile */,
 				27DF6218225A55F100335089 /* .gitignore */,
-				2702633A2235A1EC008B5910 /* Music */,
-				2737383F223C066D007C2F72 /* Generators */,
-				27373843223D5633007C2F72 /* Filters */,
+				2702633A2235A1EC008B5910 /* src */,
 				270263392235A1EC008B5910 /* Products */,
 				270263422235A22A008B5910 /* Frameworks */,
 			);
@@ -74,9 +75,11 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		2702633A2235A1EC008B5910 /* Music */ = {
+		2702633A2235A1EC008B5910 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				27373843223D5633007C2F72 /* Filters */,
+				2737383F223C066D007C2F72 /* Generators */,
 				2702633B2235A1EC008B5910 /* main.cpp */,
 				2702634A2235A6A7008B5910 /* config.h */,
 				27373841223D55D2007C2F72 /* util.h */,
@@ -84,7 +87,7 @@
 				278EA591223B2C58002A67FD /* Sheet.h */,
 				27DF621C225A6E7500335089 /* PipeOrgan.h */,
 			);
-			path = Music;
+			path = src;
 			sourceTree = "<group>";
 		};
 		270263422235A22A008B5910 /* Frameworks */ = {
@@ -118,6 +121,22 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXLegacyTarget section */
+		275A546322EE21550002164B /* MusicMake */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 275A546422EE21550002164B /* Build configuration list for PBXLegacyTarget "MusicMake" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			name = MusicMake;
+			passBuildSettingsInEnvironment = 1;
+			productName = MusicMake;
+		};
+/* End PBXLegacyTarget section */
+
 /* Begin PBXNativeTarget section */
 		270263372235A1EC008B5910 /* Music */ = {
 			isa = PBXNativeTarget;
@@ -148,6 +167,9 @@
 					270263372235A1EC008B5910 = {
 						CreatedOnToolsVersion = 10.1;
 					};
+					275A546322EE21550002164B = {
+						CreatedOnToolsVersion = 10.3;
+					};
 				};
 			};
 			buildConfigurationList = 270263332235A1EC008B5910 /* Build configuration list for PBXProject "Music" */;
@@ -164,6 +186,7 @@
 			projectRoot = "";
 			targets = (
 				270263372235A1EC008B5910 /* Music */,
+				275A546322EE21550002164B /* MusicMake */,
 			);
 		};
 /* End PBXProject section */
@@ -173,6 +196,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				275A546222EE1FC60002164B /* Makefile in Sources */,
 				2702633C2235A1EC008B5910 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -326,6 +350,33 @@
 			};
 			name = Release;
 		};
+		275A546522EE21550002164B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEBUGGING_SYMBOLS = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = M8MME6Q9DA;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		275A546622EE21550002164B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = M8MME6Q9DA;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -343,6 +394,15 @@
 			buildConfigurations = (
 				270263402235A1EC008B5910 /* Debug */,
 				270263412235A1EC008B5910 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		275A546422EE21550002164B /* Build configuration list for PBXLegacyTarget "MusicMake" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				275A546522EE21550002164B /* Debug */,
+				275A546622EE21550002164B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

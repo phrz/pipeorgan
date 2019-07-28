@@ -41,7 +41,8 @@ int main() {
 //		{8,8, 4,4,5,5, 6,7,8}, // "calliope-esque"
 		{4,2, 7,8,6,6, 2,4,4}, // Full Great w/ 16' (fff)
 		// A D S R envelope
-		0.05,0,1,0.05
+//		0.05,0,1,0.05
+		0.1,0,1,0.08
 	};
 	
 	double const baselineVolume = 1.0; // arbitrary, avoids overflow
